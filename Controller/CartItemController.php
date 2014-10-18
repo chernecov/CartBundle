@@ -30,7 +30,7 @@ use Symfony\Component\Validator\ConstraintViolationList;
 class CartItemController extends FOSRestController
 {
     /**
-     * @DI\Inject("manager.cart")
+     * @DI\Inject("chernecov.cart.manager")
      *
      * @var CartManager
      */

@@ -1,24 +1,35 @@
 services:
 
-    manager.cart:
-        class: Chernecov\Bundle\CartBundle\Services\CartManager
+    chernecov.cart.storage.provider:
+        class: Chernecov\Bundle\CartBundle\Services\SessionStorageProvider
         arguments:
             - @session
-            - @event_dispatcher
 
-    model.validator:
+    chernecov.cart.storage:
+        class: Chernecov\Bundle\CartBundle\Services\CartStorage
+        arguments:
+            - @chernecov.cart.storage.provider
+        calls:
+            - [ addChannel ]
+
+    chernecov.cart.manager:
+        class: Chernecov\Bundle\CartBundle\Services\CartManager
+        arguments:
+            - @chernecov.cart.storage
+
+    recursive.validator:
         class: Symfony\Component\Validator\Validator\RecursiveValidator
         factory_service: validator.builder
         factory_method: getValidator
 
     converter.json_to_model:
         arguments:
-            - @model.validator
+            - @recursive.validator
         class: Chernecov\Bundle\CartBundle\Converter\JsonToModelConverter
         tags:
             - { name: request.param_converter, priority: false, converter: converter.json_to_model }
 
-    chernecov.view_response_listener:
+    chernecov.cart.embedded.listener:
         class: Chernecov\Bundle\CartBundle\EventListener\EmbeddedResponseListener
         tags:
             - { name: kernel.event_listener, event: kernel.view, method: onKernelView, priority: 200 }

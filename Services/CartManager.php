@@ -9,15 +9,12 @@
 
 namespace Chernecov\Bundle\CartBundle\Services;
 
+use Chernecov\Bundle\CartBundle\Interfaces\CartStorageInterface;
 use Chernecov\Bundle\CartBundle\Model\Cart,
     Chernecov\Bundle\CartBundle\Model\CartItem;
 
-use Symfony\Component\EventDispatcher\EventDispatcherInterface,
-    Symfony\Component\HttpFoundation\Session\Session;
-
 /**
- * /**
- * Embedded trait
+ * Cart Manager
  *
  * @author Sergey Chernecov <sergey.chernecov@gmail.com>
  *
@@ -25,18 +22,14 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface,
  */
 class CartManager
 {
-    const CHANNEL_CART = 'cart';
-
     /**
      * Constructor
      *
-     * @param Session $session
-     * @param EventDispatcherInterface $dispatcher
+     * @param CartStorageInterface $cartStorage
      */
-    public function __construct(Session $session, EventDispatcherInterface $dispatcher)
+    public function __construct(CartStorageInterface $cartStorage)
     {
-        $this->session = $session;
-        $this->dispatcher = $dispatcher;
+        $this->cartStorage = $cartStorage;
         $this->cart = $this->initialize();
     }
 
@@ -88,9 +81,9 @@ class CartManager
      */
     protected function save()
     {
-        $this->session->set(
-            self::CHANNEL_CART,
-            serialize($this->cart)
+        $this->cartStorage->save(
+            $this->cart,
+            CartStorageInterface::CHANNEL_DEFAULT
         );
     }
 
@@ -100,10 +93,7 @@ class CartManager
     public function clear()
     {
         $this->cart->clear();
-        $this->session->set(
-            self::CHANNEL_CART,
-            serialize($this->cart)
-        );
+        $this->save();
     }
 
     /**
@@ -113,10 +103,9 @@ class CartManager
      */
     protected function initialize()
     {
-        $cart = unserialize($this->session->get(self::CHANNEL_CART));
+        $cart = $this->cartStorage->load(CartStorageInterface::CHANNEL_DEFAULT);
         if (!$cart instanceof Cart) {
             $cart = new Cart();
-            $cart->setSessionId($this->session->getId());
         }
         return $cart;
     }
