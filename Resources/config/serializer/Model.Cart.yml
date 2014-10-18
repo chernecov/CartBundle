@@ -1,0 +1,26 @@
+Chernecov\Bundle\CartBundle\Model\Cart:
+
+    properties:
+        showEmbedded:
+            exclude: true
+        items:
+            exclude: true
+
+    relations:
+        - rel: self
+          href:
+              route: cart_get
+              absolute: true
+
+        - rel: clear
+          href:
+              route: cart_delete
+              absolute: true
+          attributes:
+              method: DELETE
+
+        - rel: items
+          exclusion:
+              exclude_if: expr(object.showEmbedded() === false)
+          embedded:
+              content: expr(object.getItems())

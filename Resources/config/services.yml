@@ -1,0 +1,24 @@
+services:
+
+    manager.cart:
+        class: Chernecov\Bundle\CartBundle\Services\CartManager
+        arguments:
+            - @session
+            - @event_dispatcher
+
+    model.validator:
+        class: Symfony\Component\Validator\Validator\RecursiveValidator
+        factory_service: validator.builder
+        factory_method: getValidator
+
+    converter.json_to_model:
+        arguments:
+            - @model.validator
+        class: Chernecov\Bundle\CartBundle\Converter\JsonToModelConverter
+        tags:
+            - { name: request.param_converter, priority: false, converter: converter.json_to_model }
+
+    chernecov.view_response_listener:
+        class: Chernecov\Bundle\CartBundle\EventListener\EmbeddedResponseListener
+        tags:
+            - { name: kernel.event_listener, event: kernel.view, method: onKernelView, priority: 200 }

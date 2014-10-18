@@ -1,0 +1,4 @@
+cart_api:
+    type:     rest
+    prefix:   /cart/
+    resource: "@CartBundle/Resources/config/api.yml"

@@ -1,0 +1,9 @@
+cart:
+    type:     rest
+    name_prefix: cart_
+    resource: Chernecov\Bundle\CartBundle\Controller\CartController
+
+cart_item:
+    type:     rest
+    name_prefix: cart_item_
+    resource: Chernecov\Bundle\CartBundle\Controller\CartItemController

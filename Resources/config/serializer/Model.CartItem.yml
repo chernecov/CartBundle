@@ -1,0 +1,41 @@
+Chernecov\Bundle\CartBundle\Model\CartItem:
+
+    properties:
+        showEmbedded:
+            exclude: true
+        Cart:
+            exclude: true
+
+    relations:
+        - rel: delete
+          href:
+              route: cart_item_delete
+              parameters:
+                  id: expr(object.getId())
+              absolute: true
+          attributes:
+              method: DELETE
+
+        - rel: quantity
+          href:
+              route: cart_item_patch_quantity
+              parameters:
+                  id: expr(object.getId())
+                  quantity: '{quantity}'
+              absolute: true
+              generator: templated_uri
+          attributes:
+              templated: true
+              method: PATCH
+
+        - rel: patch
+          href:
+              route: cart_item_patch
+              parameters:
+                  id: expr(object.getId())
+              absolute: true
+              generator: templated_uri
+          attributes:
+              templated: true
+              method: PATCH
+              data: expr(object.getSchema())
