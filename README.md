@@ -6,8 +6,22 @@ Symfony bundle.
 Provides basic shopping cart functionality.
 Based on FOSRestBundle, HateoasBundle, NelmiApiDocBundle...
 
+Adding item to cart:
 
-GET:
+POST to ```/cart/item/add```
+
+```json
+{
+  "title": "Tiffany heart signet ring in sterling silver.",
+  "price": 158,
+  "count": 2,
+  "related_id": 74485
+}
+
+```
+
+
+You can get cart by url: /cart/content?_embedded=true
 
 ```json
 {
