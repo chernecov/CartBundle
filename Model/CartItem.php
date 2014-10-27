@@ -13,6 +13,8 @@ use Chernecov\Bundle\CartBundle\Interfaces\EmbeddedInterface,
     Chernecov\Bundle\CartBundle\Services\UUID,
     Chernecov\Bundle\CartBundle\Traits\EmbeddedTrait;
 
+use Symfony\Component\Validator\Constraints as Constraints;
+
 /**
  * Cart
  *
@@ -20,39 +22,64 @@ use Chernecov\Bundle\CartBundle\Interfaces\EmbeddedInterface,
  */
 class CartItem implements EmbeddedInterface
 {
+
     use EmbeddedTrait;
 
     /**
+     * Identifier
+     *
      * @var int
      */
     protected $id;
 
     /**
+     * Title
+     *
      * @var string
+     *
+     * @Constraints\NotBlank()
+     * @Constraints\NotNull()
+     * @Constraints\Type(type="string")
      */
     protected $title;
 
     /**
+     * Price
+     *
      * @var float
+     *
+     * @Constraints\NotNull()
+     * @Constraints\Type(type="float")
      */
     protected $price;
 
     /**
+     * Quantity
+     *
      * @var int
      */
     protected $quantity;
 
     /**
+     * Related Id
+     *
      * @var int
+     *
+     * @Constraints\NotNull()
+     * @Constraints\Type(type="integer")
      */
     protected $relatedId;
 
     /**
+     * Total Price
+     *
      * @var float
      */
     protected $total;
 
     /**
+     * Cart
+     *
      * @var Cart
      */
     protected $Cart;

@@ -39,7 +39,12 @@ class EmbeddedResponseListener
             return;
         }
 
-        $embedded = filter_var($request->get('_embedded'), FILTER_VALIDATE_BOOLEAN);
+        if ('POST' === $request->getRealMethod()) {
+            $embedded = true;
+        } else {
+            $embedded = filter_var($request->get('_embedded'), FILTER_VALIDATE_BOOLEAN);
+        }
+
         $data->setShowEmbedded((bool) $embedded);
     }
 }

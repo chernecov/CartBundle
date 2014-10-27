@@ -9,6 +9,8 @@
 
 namespace Chernecov\Bundle\CartBundle\Controller;
 
+use Symfony\Component\Validator\ConstraintViolationList;
+
 use Chernecov\Bundle\CartBundle\Model\CartItem,
     Chernecov\Bundle\CartBundle\Services\CartManager;
 
@@ -19,7 +21,6 @@ use FOS\RestBundle\Controller\FOSRestController,
 use Nelmio\ApiDocBundle\Annotation as Nelmio;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as Extra;
 use JMS\DiExtraBundle\Annotation as DI;
-use Symfony\Component\Validator\ConstraintViolationList;
 
 /**
  * Cart item controller
@@ -163,7 +164,7 @@ class CartItemController extends FOSRestController
     public function postAction(CartItem $cartItem = null, ConstraintViolationList $violations)
     {
         if ($violations->count()) {
-            return $this->view('Bad request', 400);
+            return $this->view($violations, 409);
         }
 
         $this->cartManager->add($cartItem);

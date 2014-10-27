@@ -25,26 +25,36 @@ class Cart implements EmbeddedInterface
     use EmbeddedTrait;
 
     /**
+     * Identifier
+     *
      * @var int
      */
     protected $id;
 
     /**
+     * Session Id
+     *
      * @var int
      */
     protected $sessionId;
 
     /**
+     * Related Id
+     *
      * @var int
      */
     protected $relatedId;
 
     /**
+     * Items
+     *
      * @var ArrayCollection|CartItem[]
      */
     protected $items;
 
     /**
+     * Channel
+     *
      * @var string
      */
     protected $channel;

@@ -16,6 +16,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter,
 
 use Symfony\Component\HttpFoundation\Request,
     Symfony\Component\Validator\Validator\RecursiveValidator;
+use Symfony\Component\Validator\ConstraintViolation;
 
 /**
  * Simple json param converter
