@@ -63,7 +63,8 @@ class CartItemController extends FOSRestController
      */
     public function patchQuantityAction($id, $quantity)
     {
-        return $this->view('success');
+        $this->cartManager->changeCartItemQuantity($id, $quantity);
+        return $this->view($this->cartManager->getCart());
     }
 
     /**
@@ -92,7 +93,8 @@ class CartItemController extends FOSRestController
      */
     public function deleteAction($id)
     {
-        return $this->view('success');
+        $this->cartManager->removeItem($id);
+        return $this->cartManager->getCart();
     }
 
     /**

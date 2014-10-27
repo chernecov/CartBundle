@@ -65,7 +65,7 @@ class CartController extends FOSRestController
      *      section="Cart",
      *      resource=true,
      *      statusCodes={
-     *          200="Returned when successful",
+     *          200="Returned when cart cleared",
      *          404="Returned when not found"
      *      }
      * )
@@ -84,6 +84,6 @@ class CartController extends FOSRestController
     public function deleteAction()
     {
         $this->cartManager->clear();
-        return $this->view('success');
+        return $this->view($this->cartManager->getCart());
     }
 }

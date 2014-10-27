@@ -40,7 +40,7 @@ class CartItem implements EmbeddedInterface
     /**
      * @var int
      */
-    protected $count;
+    protected $quantity;
 
     /**
      * @var int
@@ -88,25 +88,25 @@ class CartItem implements EmbeddedInterface
     }
 
     /**
-     * Count setter
+     * Quantity setter
      *
-     * @param int $count
+     * @param int $quantity
      * @return self
      */
-    public function setCount($count)
+    public function setQuantity($quantity)
     {
-        $this->count = $count;
+        $this->quantity = $quantity;
         return $this;
     }
 
     /**
-     * Count getter
+     * Quantity getter
      *
      * @return int
      */
-    public function getCount()
+    public function getQuantity()
     {
-        return $this->count;
+        return $this->quantity;
     }
 
     /**
@@ -230,7 +230,7 @@ class CartItem implements EmbeddedInterface
     static public function getSchema()
     {
         return array(
-            'json' => array('title', 'price', 'count', 'relatedId')
+            'json' => array('title', 'price', 'quantity', 'relatedId')
         );
     }
 }

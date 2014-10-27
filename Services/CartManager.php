@@ -75,8 +75,8 @@ class CartManager
     {
         $found = $this->find($cartItem);
         if ($found instanceof CartItem) {
-            $count = $found->getCount() + $cartItem->getCount();
-            $found->setCount($count);
+            $quantity = $found->getQuantity() + $cartItem->getQuantity();
+            $found->setQuantity($quantity);
         } else {
             $this->cart->addItem($cartItem);
         }
@@ -108,11 +108,13 @@ class CartManager
     }
 
     /**
-     * Saving
+     * Clearing
      */
     public function clear()
     {
-        $this->cartStorage->clear($this->getActiveChannel());
+        $this->cartStorage->clear(
+            $this->channelManager->getActiveChannel()
+        );
     }
 
     /**
@@ -122,25 +124,50 @@ class CartManager
      */
     protected function initialize()
     {
+        $channel = $this->channelManager->getActiveChannel();
+
         try {
-            $cart = $this->cartStorage->load($this->getActiveChannel());
+            $cart = $this->cartStorage->load($channel);
         } catch (\Exception $e) {
             $cart = null;
         }
 
         if (!$cart instanceof Cart) {
             $cart = new Cart();
-            $cart->setChannel($this->getActiveChannel());
+            $cart->setChannel($channel);
         }
 
         return $cart;
     }
 
     /**
-     * @return mixed|string
+     * Removing item
+     *
+     * @param string $id
      */
-    private function getActiveChannel()
+    public function removeItem($id)
     {
-        return $this->channelManager->getActiveChannel();
+        foreach ($this->cart->getItems() as $item) {
+            if ($item->getId() == $id) {
+                $this->cart->getItems()->removeElement($item);
+            }
+        }
+        $this->save();
+    }
+
+    /**
+     * Changing item quantity
+     *
+     * @param string $id
+     * @param int $quantity
+     */
+    public function changeCartItemQuantity($id, $quantity)
+    {
+        foreach ($this->cart->getItems() as $item) {
+            if ($item->getId() == $id) {
+                $item->setQuantity((int) $quantity);
+            }
+        }
+        $this->save();
     }
 }

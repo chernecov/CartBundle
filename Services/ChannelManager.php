@@ -29,22 +29,31 @@ class ChannelManager
     protected $channels;
 
     /**
-     * Active channels
+     * Active channel
      *
-     * @var string
+     * @var string|null
      */
     protected $activeChannel = null;
 
     /**
      * Constructor
+     *
+     * @param array $channels
+     * @throws Exception
      */
     public function __construct(array $channels = null)
     {
-        if ($channels === null) {
+        if (!$channels) {
             $channels = array(self::CHANNEL_DEFAULT);
-            $this->activeChannel = self::CHANNEL_DEFAULT;
         }
-        $this->channels = new ArrayCollection($channels);
+
+        $valid = min(array_map('is_string', $channels));
+        if (!$valid) {
+            throw new Exception('Invalid array of channels given');
+        }
+
+        $this->channels = new ArrayCollection(array_values($channels));
+        $this->activeChannel = $this->channels->first();
     }
 
     /**
@@ -78,11 +87,17 @@ class ChannelManager
     public function removeChannel($channel)
     {
         if ($this->channels->contains($channel)) {
-            $this->channels->add($channel);
+            $this->channels->removeElement($channel);
         }
         return $this;
     }
 
+    /**
+     * If channel exists
+     *
+     * @param $channel
+     * @return bool
+     */
     public function channelExists($channel)
     {
         return $this->channels->contains($channel) ? true : false;
@@ -106,15 +121,14 @@ class ChannelManager
      */
     public function getActiveChannel()
     {
-        $channel = $this->activeChannel;
-        if ($channel === null) {
+        if ($this->activeChannel === null) {
             if (!$this->channels->isEmpty()) {
                 return $this->channels->first();
             } else {
                 throw new Exception('You have no cart channel');
             }
         }
-        return $channel;
+        return $this->activeChannel;
     }
 
     /**

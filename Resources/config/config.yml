@@ -3,7 +3,7 @@ services:
     chernecov.cart.channel_manager:
         class: Chernecov\Bundle\CartBundle\Services\ChannelManager
         arguments:
-            - [ default ]
+            - [ default, waitlist ]
 
     chernecov.cart.session_storage_provider:
         class: Chernecov\Bundle\CartBundle\Services\SessionStorageProvider
@@ -34,12 +34,12 @@ services:
         tags:
             - { name: request.param_converter, priority: false, converter: converter.json_to_model }
 
-    chernecov.cart.response.listener.embedded:
+    chernecov.cart.listener.response.embedded:
         class: Chernecov\Bundle\CartBundle\EventListener\EmbeddedResponseListener
         tags:
             - { name: kernel.event_listener, event: kernel.view, method: onKernelView, priority: 200 }
 
-    chernecov.cart.request.listener.channel:
+    chernecov.cart.listener.request.channel:
         class: Chernecov\Bundle\CartBundle\EventListener\ChannelRequestListener
         arguments:
             - @chernecov.cart.channel_manager
