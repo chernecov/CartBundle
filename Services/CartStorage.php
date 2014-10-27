@@ -28,44 +28,42 @@ class CartStorage implements CartStorageInterface
     protected $storageProvider;
 
     /**
-     * Channels
+     * Channel manager
      *
-     * @var ArrayCollection
+     * @var ChannelManager
      */
-    protected $channels;
+    protected $channelManager;
 
     /**
      * Constructor
+     *
+     * @param StorageProviderInterface $storageProvider
+     * @param ChannelManager $channelManager
      */
-    public function __construct(StorageProviderInterface $storageProvider)
-    {
+    public function __construct(
+        StorageProviderInterface $storageProvider,
+        ChannelManager $channelManager
+    ) {
         $this->storageProvider = $storageProvider;
-        $this->channels = new ArrayCollection();
+        $this->channelManager = $channelManager;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function addChannel($channel = self::CHANNEL_DEFAULT)
+    public function clear($channel)
     {
-        if (!is_string($channel)) {
-            return $this;
-        }
-
-        if ($this->channels->contains($channel)) {
-            return $this;
-        }
-
-        $this->channels->add($channel);
+        $this->storageProvider->clear($channel);
         return $this;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function save(Cart $cart, $channel)
+    public function save(Cart $cart)
     {
-        if (!$this->channels->contains($channel)) {
+        $channel = $cart->getChannel();
+        if (!$this->channelManager->channelExists($channel)) {
             return false;
         }
         try {
@@ -81,11 +79,13 @@ class CartStorage implements CartStorageInterface
      */
     public function load($channel)
     {
-        if (!$this->channels->contains($channel)) {
+        if (!$this->channelManager->channelExists($channel)) {
             return null;
         }
         try {
-            $cart = unserialize($this->storageProvider->load($channel));
+            $cart = unserialize(
+                $this->storageProvider->load($channel)
+            );
         } catch (\Exception $exception) {
             return null;
         }

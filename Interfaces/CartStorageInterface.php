@@ -18,25 +18,20 @@ use Chernecov\Bundle\CartBundle\Model\Cart;
  */
 interface CartStorageInterface
 {
-    const CHANNEL_DEFAULT = 'SHOPPING_CART';
-
     /**
-     * Let's add channel
-     *
-     * @param string $channel
-     * @return self
+     * @param $channel
+     * @return mixed
      */
-    public function addChannel($channel);
+    public function clear($channel);
 
     /**
      * Let's save cart for channel
      *
      * @param Cart $cart
-     * @param string $channel
      *
      * @return bool
      */
-    public function save(Cart $cart, $channel);
+    public function save(Cart $cart);
 
     /**
      * Let's load the cart from channel

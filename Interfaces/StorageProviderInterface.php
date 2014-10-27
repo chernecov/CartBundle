@@ -17,6 +17,14 @@ namespace Chernecov\Bundle\CartBundle\Interfaces;
 interface StorageProviderInterface
 {
     /**
+     * Clear
+     *
+     * @param $key
+     * @return self
+     */
+    public function clear($key);
+
+    /**
      * Save
      *
      * @param string $key

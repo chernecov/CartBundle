@@ -18,18 +18,41 @@ use Chernecov\Bundle\CartBundle\Model\Cart,
  *
  * @author Sergey Chernecov <sergey.chernecov@gmail.com>
  *
- * @property Cart cart
  */
 class CartManager
 {
     /**
+     * Cart
+     *
+     * @var Cart|null
+     */
+    protected $cart = null;
+
+    /**
+     * Channel manager
+     *
+     * @var ChannelManager
+     */
+    protected $channelManager;
+
+    /**
+     * CartStorage
+     *
+     * @var CartStorageInterface
+     */
+    protected $cartStorage;
+
+    /**
      * Constructor
      *
      * @param CartStorageInterface $cartStorage
+     * @param ChannelManager $channelManager
      */
-    public function __construct(CartStorageInterface $cartStorage)
+    public function __construct(CartStorageInterface $cartStorage, ChannelManager $channelManager)
     {
         $this->cartStorage = $cartStorage;
+        $this->channelManager = $channelManager;
+
         $this->cart = $this->initialize();
     }
 
@@ -81,10 +104,7 @@ class CartManager
      */
     protected function save()
     {
-        $this->cartStorage->save(
-            $this->cart,
-            CartStorageInterface::CHANNEL_DEFAULT
-        );
+        $this->cartStorage->save($this->cart);
     }
 
     /**
@@ -92,8 +112,7 @@ class CartManager
      */
     public function clear()
     {
-        $this->cart->clear();
-        $this->save();
+        $this->cartStorage->clear($this->getActiveChannel());
     }
 
     /**
@@ -103,10 +122,25 @@ class CartManager
      */
     protected function initialize()
     {
-        $cart = $this->cartStorage->load(CartStorageInterface::CHANNEL_DEFAULT);
+        try {
+            $cart = $this->cartStorage->load($this->getActiveChannel());
+        } catch (\Exception $e) {
+            $cart = null;
+        }
+
         if (!$cart instanceof Cart) {
             $cart = new Cart();
+            $cart->setChannel($this->getActiveChannel());
         }
+
         return $cart;
+    }
+
+    /**
+     * @return mixed|string
+     */
+    private function getActiveChannel()
+    {
+        return $this->channelManager->getActiveChannel();
     }
 }

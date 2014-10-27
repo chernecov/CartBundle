@@ -1,6 +1,11 @@
 services:
 
-    chernecov.cart.storage.provider:
+    chernecov.cart.channel_manager:
+        class: Chernecov\Bundle\CartBundle\Services\ChannelManager
+        arguments:
+            - [ default ]
+
+    chernecov.cart.session_storage_provider:
         class: Chernecov\Bundle\CartBundle\Services\SessionStorageProvider
         arguments:
             - @session
@@ -8,14 +13,14 @@ services:
     chernecov.cart.storage:
         class: Chernecov\Bundle\CartBundle\Services\CartStorage
         arguments:
-            - @chernecov.cart.storage.provider
-        calls:
-            - [ addChannel ]
+            - @chernecov.cart.session_storage_provider
+            - @chernecov.cart.channel_manager
 
     chernecov.cart.manager:
         class: Chernecov\Bundle\CartBundle\Services\CartManager
         arguments:
             - @chernecov.cart.storage
+            - @chernecov.cart.channel_manager
 
     recursive.validator:
         class: Symfony\Component\Validator\Validator\RecursiveValidator
@@ -29,7 +34,14 @@ services:
         tags:
             - { name: request.param_converter, priority: false, converter: converter.json_to_model }
 
-    chernecov.cart.embedded.listener:
+    chernecov.cart.response.listener.embedded:
         class: Chernecov\Bundle\CartBundle\EventListener\EmbeddedResponseListener
         tags:
             - { name: kernel.event_listener, event: kernel.view, method: onKernelView, priority: 200 }
+
+    chernecov.cart.request.listener.channel:
+        class: Chernecov\Bundle\CartBundle\EventListener\ChannelRequestListener
+        arguments:
+            - @chernecov.cart.channel_manager
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: 200 }

@@ -51,4 +51,13 @@ class SessionStorageProvider implements StorageProviderInterface
     {
         return $this->session->get($key);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function clear($key)
+    {
+        $this->session->remove($key);
+        return $this;
+    }
 }

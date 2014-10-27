@@ -27,7 +27,7 @@ class Cart implements EmbeddedInterface
     /**
      * @var int
      */
-    protected $cartId;
+    protected $id;
 
     /**
      * @var int
@@ -45,36 +45,47 @@ class Cart implements EmbeddedInterface
     protected $items;
 
     /**
+     * @var string
+     */
+    protected $channel;
+
+    /**
      * Constructor
      */
     public function __construct()
     {
-        $this->cartId = UUID::generate();
+        $this->id = UUID::generate();
         $this->items = new ArrayCollection();
     }
 
     /**
-     * CartId setter
+     * Cart id setter
      *
-     * @param mixed $cartId
+     * @param mixed $id
      * @return self
      */
-    public function setCartId($cartId)
+    public function setId($id)
     {
-        $this->cartId = $cartId;
+        $this->id = $id;
         return $this;
     }
 
     /**
-     * CartId getter
+     * Cart id getter
      *
      * @return mixed
      */
-    public function getCartId()
+    public function getId()
     {
-        return $this->cartId;
+        return $this->id;
     }
 
+    /**
+     * Adding cart item
+     *
+     * @param CartItem $cartItem
+     * @return $this
+     */
     public function addItem(CartItem $cartItem)
     {
         $this->items->add($cartItem);
@@ -148,5 +159,27 @@ class Cart implements EmbeddedInterface
     public function getSessionId()
     {
         return $this->sessionId;
+    }
+
+    /**
+     * Channel setter
+     *
+     * @param string $channel
+     * @return self
+     */
+    public function setChannel($channel)
+    {
+        $this->channel = $channel;
+        return $this;
+    }
+
+    /**
+     * Channel getter
+     *
+     * @return string
+     */
+    public function getChannel()
+    {
+        return $this->channel;
     }
 }
